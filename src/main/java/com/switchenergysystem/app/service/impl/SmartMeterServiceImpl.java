@@ -25,7 +25,7 @@ public class SmartMeterServiceImpl implements SmartMeterService {
             throw new RuntimeException("Smart meter already exists");
         }
 
-        smartMeter.setStatus("enabled");
+        smartMeter.setStatus("pending_approval");
         return smartMeterRepo.save(smartMeter);
 
     }
@@ -55,7 +55,7 @@ public class SmartMeterServiceImpl implements SmartMeterService {
         SmartMeter smartMeter = smartMeterRepo.findByMeterIdAndStatus(meterId, "enabled");
 
         if (smartMeter == null) {
-            throw  new RuntimeException("Smart meter not found");
+            throw new RuntimeException("Smart meter not found");
         }
 
         smartMeter.getReadings().add(new Reading(new Date(), reading));
@@ -64,15 +64,19 @@ public class SmartMeterServiceImpl implements SmartMeterService {
 
     @Override
     public SmartMeter changeStatus(String id, String status) {
-        SmartMeter smartMeter = smartMeterRepo.findByMeterIdAndStatus(id, "enabled");
+
+        SmartMeter smartMeter = null;
+        smartMeter = smartMeterRepo.findByMeterIdAndStatus(id, "enabled");
 
         if (smartMeter == null) {
-            throw  new RuntimeException("Smart meter not found");
+            smartMeter = smartMeterRepo.findByMeterIdAndStatus(id, "pending_approval");
+            if (smartMeter == null) {
+                throw new RuntimeException("Smart meter not found");
+            }
         }
 
         smartMeter.setStatus(status);
         return smartMeterRepo.save(smartMeter);
-
     }
 
 }
