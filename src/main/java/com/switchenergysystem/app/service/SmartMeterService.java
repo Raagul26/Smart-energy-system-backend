@@ -22,4 +22,6 @@ public interface SmartMeterService {
 
     SmartMeter changeStatus(String id, String status);
 
+    Double calculate(String meterId) throws Exception;
+
 }

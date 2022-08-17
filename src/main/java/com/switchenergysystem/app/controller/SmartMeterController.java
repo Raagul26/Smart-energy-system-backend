@@ -83,8 +83,20 @@ public class SmartMeterController {
     @PutMapping("/reading")
     public ResponseEntity<APIResponse> insertReading(@PathParam("meterId") String meterId, @PathParam("reading") double reading) {
         APIResponse response = new APIResponse();
+        System.out.println(meterId + " " + reading);
         try {
             response.setData(smartMeterService.insertReading(meterId, reading));
+        } catch (Exception e) {
+            response.setMessage(e.getMessage());
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/reading")
+    public ResponseEntity<APIResponse> getReading(@PathParam("meterId") String meterId) {
+        APIResponse response = new APIResponse();
+        try {
+            response.setData(smartMeterService.calculate(meterId));
         } catch (Exception e) {
             response.setMessage(e.getMessage());
         }
